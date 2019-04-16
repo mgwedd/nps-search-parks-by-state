@@ -8,9 +8,19 @@ function watchForm() {
   let maxResults;
   $('form').submit(event => {
     event.preventDefault();
-    searchInput = $('#js-search-parks').val();
-    maxResults = $('#js-max-results').val();
-    getParks(searchInput, maxResults);
+    try {
+      let rawInput = $('#js-search-parks').val();
+      // Input must be at least two contiguous letters. Only commas and spaces allowed as seperators.
+      if (!/^(\s*[a-zA-Z]{2}\s*,?)+$/.test(rawInput)) {
+        throw Error('Whoops, invalid state code(s). Enter state code(s) in the format "NY, MA, NH" or "NY MA NH" etc.');
+      } else {
+        searchInput = rawInput.replace(/\s/g, '');
+        maxResults = $('#js-max-results').val();
+        getParks(searchInput, maxResults);
+      } 
+    } catch(error) {
+      alert(error.message);
+    }
   });
 }
 
